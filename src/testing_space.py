@@ -1,5 +1,5 @@
 # this will be a workspace for notes while I'm following the lectures
-from pathlib import Path
+from pymel.core.system import Path
 
 
 class SceneFile(object):
@@ -27,11 +27,16 @@ class SceneFile(object):
     def _init_from_path(self, path):
         path = Path(path)
         self.folder_path = path.parent
-        self.ext = path.suffix
-        self.descriptor, self.task, ver = path.stem.split("_")
+        self.ext = path.ext
+        self.descriptor, self.task, ver = path.name.stripext().split("_")
         self.ver = int(ver.split("v")[-1])
 
 
 scene_file = SceneFile("D:/tank_model_v001.ma")
-print(scene_file.path)
+print(scene_file.folder_path)
+print(scene_file.descriptor)
+print(scene_file.task)
+print(scene_file.ver)
+print(scene_file.ext)
 print(scene_file.filename)
+print(scene_file.path)
