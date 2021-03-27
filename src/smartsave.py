@@ -22,24 +22,35 @@ class SmartSaveUI(QtWidgets.QDialog):
     def __init__(self):
         super(SmartSaveUI, self).__init__(parent=maya_main_window())
         self.setWindowTitle("Smart Save")
-        self.setMinimumWidth(500)
-        self.setMaximumHeight(200)
+        self.setMinimumWidth(700)
+        self.setMaximumHeight(300)
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
         self.create_ui()
 
     def create_ui(self):
         self.title_lbl = QtWidgets.QLabel("Smart Save")
-        self.title_lbl.setStyleSheet("font: bold 20px")
+        self.title_lbl.setStyleSheet("font: bold 22px")
 
         self.folder_lay = self._create_folder_ui()
         self.filename_lay = self._create_filename_ui()
+        self.button_lay = self._create_button_ui()
 
         self.main_lay = QtWidgets.QVBoxLayout()
         self.main_lay.addWidget(self.title_lbl)
         self.main_lay.addLayout(self.folder_lay)
         self.main_lay.addLayout(self.filename_lay)
+        self.main_lay.addStretch()
+        self.main_lay.addLayout(self.button_lay)
         self.setLayout(self.main_lay)
+
+    def _create_button_ui(self):
+        self.save_btn = QtWidgets.QPushButton("Save")
+        self.save_increment_btn = QtWidgets.QPushButton("Save Increment")
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(self.save_btn)
+        layout.addWidget(self.save_increment_btn)
+        return layout
 
     def _create_filename_ui(self):
         layout = self._create_filename_headers()
