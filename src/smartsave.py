@@ -31,8 +31,8 @@ class SmartSaveUI(QtWidgets.QDialog):
     def create_ui(self):
         self.title_lbl = QtWidgets.QLabel("Smart Save")
         self.title_lbl.setStyleSheet("font: bold 20px")
-        self.folder_lay = self._create_folder_ui()
 
+        self.folder_lay = self._create_folder_ui()
         self.filename_lay = self._create_filename_ui()
 
         self.main_lay = QtWidgets.QVBoxLayout()
@@ -42,12 +42,33 @@ class SmartSaveUI(QtWidgets.QDialog):
         self.setLayout(self.main_lay)
 
     def _create_filename_ui(self):
+        layout = self._create_filename_headers()
+
+        self.descriptor_le = QtWidgets.QLineEdit("Main")
+        self.descriptor_le.setMinimumWidth(100)
+        self.task_le = QtWidgets.QLineEdit("Model")
+        self.task_le.setFixedWidth(70)
+        self.version_sbx = QtWidgets.QSpinBox()
+        self.version_sbx.setValue(1)
+        self.version_sbx.setFixedWidth(70)
+        self.version_sbx.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.ext_lbl = QtWidgets.QLabel(".ma")
+
+        layout.addWidget(self.descriptor_le, 1, 0)
+        layout.addWidget(QtWidgets.QLabel("_"), 1, 1)
+        layout.addWidget(self.task_le, 1, 2)
+        layout.addWidget(QtWidgets.QLabel("_v"), 1, 3)
+        layout.addWidget(self.version_sbx, 1, 4)
+        layout.addWidget(self.ext_lbl, 1, 5)
+        return layout
+
+    def _create_filename_headers(self):
         self.descriptor_header_lbl = QtWidgets.QLabel("Descriptor")
-        self.descriptor_header_lbl.setStyleSheet("font: bold")
+        self.descriptor_header_lbl.setStyleSheet("font: bold 16px")
         self.task_header_lbl = QtWidgets.QLabel("Task")
-        self.task_header_lbl.setStyleSheet("font: bold")
+        self.task_header_lbl.setStyleSheet("font: bold 16px")
         self.version_header_lbl = QtWidgets.QLabel("Version")
-        self.version_header_lbl.setStyleSheet("font: bold")
+        self.version_header_lbl.setStyleSheet("font: bold 16px")
         layout = QtWidgets.QGridLayout()
         layout.addWidget(self.descriptor_header_lbl, 0, 0)
         layout.addWidget(self.task_header_lbl, 0, 2)
