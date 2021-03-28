@@ -26,6 +26,7 @@ class SmartSaveUI(QtWidgets.QDialog):
         self.setMaximumHeight(300)
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
+        self.scene_file = SceneFile()
         self.create_ui()
         self.create_connections()
 
@@ -58,12 +59,12 @@ class SmartSaveUI(QtWidgets.QDialog):
     def _create_filename_ui(self):
         layout = self._create_filename_headers()
 
-        self.descriptor_le = QtWidgets.QLineEdit("Main")
+        self.descriptor_le = QtWidgets.QLineEdit(self.scene_file.descriptor)
         self.descriptor_le.setMinimumWidth(100)
-        self.task_le = QtWidgets.QLineEdit("Model")
+        self.task_le = QtWidgets.QLineEdit(self.scene_file.task)
         self.task_le.setFixedWidth(70)
         self.version_sbx = QtWidgets.QSpinBox()
-        self.version_sbx.setValue(1)
+        self.version_sbx.setValue(self.scene_file.ver)
         self.version_sbx.setFixedWidth(70)
         self.version_sbx.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.ext_lbl = QtWidgets.QLabel(".ma")
@@ -71,18 +72,18 @@ class SmartSaveUI(QtWidgets.QDialog):
         layout.addWidget(self.descriptor_le, 1, 0)
         layout.addWidget(QtWidgets.QLabel("_"), 1, 1)
         layout.addWidget(self.task_le, 1, 2)
-        layout.addWidget(QtWidgets.QLabel("_v"), 1, 3)
+        layout.addWidget(QtWidgets.QLabel("_V"), 1, 3)
         layout.addWidget(self.version_sbx, 1, 4)
         layout.addWidget(self.ext_lbl, 1, 5)
         return layout
 
     def _create_filename_headers(self):
         self.descriptor_header_lbl = QtWidgets.QLabel("Descriptor")
-        self.descriptor_header_lbl.setStyleSheet("font: bold 16px")
+        self.descriptor_header_lbl.setStyleSheet("font: bold 17px")
         self.task_header_lbl = QtWidgets.QLabel("Task")
-        self.task_header_lbl.setStyleSheet("font: bold 16px")
+        self.task_header_lbl.setStyleSheet("font: bold 17px")
         self.version_header_lbl = QtWidgets.QLabel("Version")
-        self.version_header_lbl.setStyleSheet("font: bold 16px")
+        self.version_header_lbl.setStyleSheet("font: bold 17px")
         layout = QtWidgets.QGridLayout()
         layout.addWidget(self.descriptor_header_lbl, 0, 0)
         layout.addWidget(self.task_header_lbl, 0, 2)
@@ -125,17 +126,17 @@ class SmartSaveUI(QtWidgets.QDialog):
 class SceneFile(object):
     """A representation of a Scene file"""
     def __init__(self, path=None):
-        self.folder_path = Path()
+        self.folder_path = Path(cmds.workspace(query=True,
+                                               rootDirectory=True)) / "scenes"
         self.descriptor = "main"
-        self.task = None
+        self.task = "model"
         self.ver = 1
         self.ext = ".ma"
         scene = pmc.system.sceneName()
         if not path and scene:
             path = scene
         if not path and not scene:
-            log.warning("Unable to initialize SceneFile object from a "
-                        "new scene. Please specify a path.")
+            log.info("Initialize with default properties.")
             return
         self._init_from_path(path)
 
