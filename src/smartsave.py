@@ -50,6 +50,7 @@ class SmartSaveUI(QtWidgets.QDialog):
         """Connect widget signals to slots"""
         self.cancel_btn.clicked.connect(self._cancel)
         self.folder_browse_btn.clicked.connect(self._browse_dir)
+        self.save_btn.clicked.connect(self._save)
 
     @QtCore.Slot()
     def _cancel(self):
@@ -66,6 +67,16 @@ class SmartSaveUI(QtWidgets.QDialog):
             options=QtWidgets.QFileDialog.ShowDirsOnly |
                     QtWidgets.QFileDialog.DontResolveSymlinks)
         self.folder_le.setText(this_dir)
+
+    @QtCore.Slot()
+    def _save(self):
+        """Save the file as is"""
+        self.scene_file.folder_path = self.folder_le.text()
+        self.scene_file.descriptor = self.descriptor_le.text()
+        self.scene_file.task = self.task_le.text()
+        self.scene_file.ver = self.version_sbx.value()
+        self.scene_file.ext = self.ext_lbl.text()
+        self.scene_file.save()
 
     def _create_button_ui(self):
         self.save_btn = QtWidgets.QPushButton("Save")
@@ -126,7 +137,7 @@ class SmartSaveUI(QtWidgets.QDialog):
 class SceneFile(object):
     """A representation of a Scene file"""
     def __init__(self, path=None):
-        self.folder_path = Path(cmds.workspace(query=True,
+        self._folder_path = Path(cmds.workspace(query=True,
                                                rootDirectory=True)) / "scenes"
         self.descriptor = "main"
         self.task = "model"
@@ -139,6 +150,14 @@ class SceneFile(object):
             log.info("Initialize with default properties.")
             return
         self._init_from_path(path)
+
+    @property
+    def folder_path(self):
+        return self._folder_path
+
+    @folder_path.setter
+    def folder_path(self, val):
+        self._folder_path = Path(val)
 
     @property
     def filename(self):
