@@ -46,6 +46,27 @@ class SmartSaveUI(QtWidgets.QDialog):
         self.main_lay.addLayout(self.button_lay)
         self.setLayout(self.main_lay)
 
+    def create_connections(self):
+        """Connect widget signals to slots"""
+        self.cancel_btn.clicked.connect(self._cancel)
+        self.folder_browse_btn.clicked.connect(self._browse_dir)
+
+    @QtCore.Slot()
+    def _cancel(self):
+        """Quits the dialog"""
+        self.close()
+
+    @QtCore.Slot()
+    def _browse_dir(self):
+        """Browse Directory"""
+        this_dir = QtWidgets.QFileDialog.getExistingDirectory(
+            parent=self,
+            caption="Select Folder",
+            dir=self.folder_le.text(),
+            options=QtWidgets.QFileDialog.ShowDirsOnly |
+                    QtWidgets.QFileDialog.DontResolveSymlinks)
+        self.folder_le.setText(this_dir)
+
     def _create_button_ui(self):
         self.save_btn = QtWidgets.QPushButton("Save")
         self.save_increment_btn = QtWidgets.QPushButton("Save Increment")
@@ -100,27 +121,6 @@ class SmartSaveUI(QtWidgets.QDialog):
         layout.addWidget(self.folder_le)
         layout.addWidget(self.folder_browse_btn)
         return layout
-
-    def create_connections(self):
-        """Connect widget signals to slots"""
-        self.cancel_btn.clicked.connect(self.cancel)
-        self.folder_browse_btn.clicked.connect(self.browse_dir)
-
-    @QtCore.Slot()
-    def cancel(self):
-        """Quits the dialog"""
-        self.close()
-
-    @QtCore.Slot()
-    def browse_dir(self):
-        """Browse Directory"""
-        this_dir = QtWidgets.QFileDialog.getExistingDirectory(
-            parent=self,
-            caption="Select File Location",
-            dir=self.folder_le.text(),
-            options=QtWidgets.QFileDialog.ShowDirsOnly |
-            QtWidgets.QFileDialog.DontResolveSymlinks)
-        self.folder_le.setText(this_dir)
 
 
 class SceneFile(object):
