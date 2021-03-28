@@ -51,6 +51,7 @@ class SmartSaveUI(QtWidgets.QDialog):
         self.cancel_btn.clicked.connect(self._cancel)
         self.folder_browse_btn.clicked.connect(self._browse_dir)
         self.save_btn.clicked.connect(self._save)
+        self.save_increment_btn.clicked.connect(self._save_increment)
 
     @QtCore.Slot()
     def _cancel(self):
@@ -71,12 +72,22 @@ class SmartSaveUI(QtWidgets.QDialog):
     @QtCore.Slot()
     def _save(self):
         """Save the file as is"""
+        self._set_scenefile_properties_from_ui()
+        self.scene_file.save()
+
+    @QtCore.Slot()
+    def _save_increment(self):
+        """Save next version of the file"""
+        self._set_scenefile_properties_from_ui()
+        self.scene_file.increment_save()
+        self.version_sbx.setValue(self.scene_file.ver)
+
+    def _set_scenefile_properties_from_ui(self):
         self.scene_file.folder_path = self.folder_le.text()
         self.scene_file.descriptor = self.descriptor_le.text()
         self.scene_file.task = self.task_le.text()
         self.scene_file.ver = self.version_sbx.value()
         self.scene_file.ext = self.ext_lbl.text()
-        self.scene_file.save()
 
     def _create_button_ui(self):
         self.save_btn = QtWidgets.QPushButton("Save")
