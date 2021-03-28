@@ -103,11 +103,23 @@ class SmartSaveUI(QtWidgets.QDialog):
     def create_connections(self):
         """Connect widget signals to slots"""
         self.cancel_btn.clicked.connect(self.cancel)
+        self.folder_browse_btn.clicked.connect(self.browse_dir)
 
     @QtCore.Slot()
     def cancel(self):
         """Quits the dialog"""
         self.close()
+
+    @QtCore.Slot()
+    def browse_dir(self):
+        """Browse Directory"""
+        this_dir = QtWidgets.QFileDialog.getExistingDirectory(
+            parent=self,
+            caption="Select File Location",
+            dir=self.folder_le.text(),
+            options=QtWidgets.QFileDialog.ShowDirsOnly |
+            QtWidgets.QFileDialog.DontResolveSymlinks)
+        self.folder_le.setText(this_dir)
 
 
 class SceneFile(object):
