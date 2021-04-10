@@ -14,3 +14,17 @@ import maya.OpenMaya as om
 # change transform node scale randomly for instances
 
 # change transform node rotation randomly for instances
+
+class Scatter(object):
+    """My code for the Scatter Tool"""
+
+    def __init__(self):
+        self.cur_sel = cmds.ls(selection=True)
+        self.to_transfer_sel = self.cur_sel[0]
+
+        self.all_geo = cmds.ls(geometry=True)
+        self.all_trans = cmds.ls(transforms=True)
+
+        self.transfer_sel = self.cur_sel[1]
+        self.transfer_vert = cmds.ls(self.transfer_sel + ".vtx[*]",
+                                     flatten=True)
