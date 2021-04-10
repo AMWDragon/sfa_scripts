@@ -15,6 +15,7 @@ import maya.OpenMaya as om
 
 # change transform node rotation randomly for instances
 
+
 class Scatter(object):
     """My code for the Scatter Tool"""
 
@@ -28,3 +29,11 @@ class Scatter(object):
         self.transfer_sel = self.cur_sel[1]
         self.transfer_vert = cmds.ls(self.transfer_sel + ".vtx[*]",
                                      flatten=True)
+
+        self.creating_instances()
+
+    def creating_instances(self):
+        for vertex in self.transfer_vert:
+            new_geo = cmds.instance(self.to_transfer_sel)
+            vtx_pos = cmds.xform([vertex], query=True, translation=True)
+            cmds.xform(new_geo, translation=vtx_pos)
