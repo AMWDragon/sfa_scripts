@@ -30,13 +30,20 @@ class ScatterUI(QtWidgets.QDialog):
 
     def create_ui(self):
         self.heading = QtWidgets.QLabel("Scatter Tool")
-        self.heading.setStyleSheet("font: bold 22px")
+        self.heading.setStyleSheet("font: bold 25px")
 
         self.object_layout = self._create_object_ui()
+        self.rs_headers = self._create_scale_rotate_headers()
+        self.rs_layout = self._create_scale_rotate_ui()
+        self.btn_layout = self._create_button_ui()
 
         self.primary_layout = QtWidgets.QVBoxLayout()
         self.primary_layout.addWidget(self.heading)
         self.primary_layout.addLayout(self.object_layout)
+        self.primary_layout.addLayout(self.rs_headers)
+        self.primary_layout.addLayout(self.rs_layout)
+        self.primary_layout.addStretch()
+        self.primary_layout.addLayout(self.btn_layout)
 
         self.setLayout(self.primary_layout)
 
@@ -52,6 +59,18 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addWidget(self.obj1_le, 0, 1)
         layout.addWidget(QtWidgets.QLabel("on to"), 0, 2)
         layout.addWidget(self.obj2_le, 0, 3)
+
+        return layout
+
+    def _create_scale_rotate_headers(self):
+        self.scale_header = QtWidgets.QLabel("Randomize Scale")
+        self.scale_header.setStyleSheet("font: bold 20px")
+        self.rotation_header = QtWidgets.QLabel("Randomize Rotation")
+        self.rotation_header.setStyleSheet("font: bold 20px")
+
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(self.scale_header, 2, 0)
+        layout.addWidget(self.rotation_header, 2, 2)
 
         return layout
 
