@@ -1,21 +1,31 @@
 import maya.cmds as cmds
 import maya.OpenMaya as om
 import random
-import math
+from PySide2 import QtWidgets, QtCore
+from shiboken2 import wrapInstance
+import maya.OpenMayaUI as omui
 
-# determine what the user has selected.
 
-# Store all available objects in a list(drop down menu)and change the selection
+def maya_main_window():
+    """Return maya main window widget"""
+    main_window = omui.MQtUtil.mainWindow()
+    return wrapInstance(long(main_window), QtWidgets.QWidget)
 
-# Store all available objects in a list to move objects to it's vertices
 
-# create instances of the object
+class ScatterUI(QtWidgets.QDialog):
+    """Scatter UI Class"""
 
-# move instances to polygon vertices
+    def __init__(self):
+        super(ScatterUI, self).__init__(parent=maya_main_window())
 
-# change transform node scale randomly for instances
+        self.setWindowTitle("Scatter Tool")
+        self.setMinimumWidth(700)
+        self.setMaximumHeight(700)
 
-# change transform node rotation randomly for instances
+        self.setWindowFlags(self.windowFlags() ^
+                            QtCore.Qt.WindowContextHelpButtonHint)
+
+        self.scattering = Scatter()
 
 
 class Scatter(object):
@@ -47,7 +57,6 @@ class Scatter(object):
         self.max_rz = 360.0
 
         self.creating_instances()
-        cmds.selection(clear=True)
 
     def creating_instances(self):
         for vertex in self.transfer_vert:
