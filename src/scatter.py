@@ -81,27 +81,27 @@ class ScatterUI(QtWidgets.QDialog):
 
     def _create_rotate_ui(self):
 
-        self.rx_min = QtWidgets.QSpinBox()
+        self.rx_min = QtWidgets.QSpinBox(maximum=360)
         self.rx_min.setValue(self.scattering.min_rx)
         self.rx_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
-        self.rx_max = QtWidgets.QSpinBox()
+        self.rx_max = QtWidgets.QSpinBox(maximum=360)
         self.rx_max.setValue(self.scattering.max_rx)
         self.rx_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
-        self.ry_min = QtWidgets.QSpinBox()
+        self.ry_min = QtWidgets.QSpinBox(maximum=360)
         self.ry_min.setValue(self.scattering.min_ry)
         self.ry_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
-        self.ry_max = QtWidgets.QSpinBox()
+        self.ry_max = QtWidgets.QSpinBox(maximum=360)
         self.ry_max.setValue(self.scattering.max_ry)
         self.ry_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
-        self.rz_min = QtWidgets.QSpinBox()
+        self.rz_min = QtWidgets.QSpinBox(maximum=360)
         self.rz_min.setValue(self.scattering.min_rz)
         self.rz_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
-        self.rz_max = QtWidgets.QSpinBox()
+        self.rz_max = QtWidgets.QSpinBox(maximum=360)
         self.rz_max.setValue(self.scattering.max_rz)
         self.rz_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
@@ -160,20 +160,41 @@ class ScatterUI(QtWidgets.QDialog):
 
         return layout
 
-
-
     def _create_button_ui(self):
         self.scatter_btn = QtWidgets.QPushButton("Scatter")
-        self.cancel_btn = QtWidgets.QPushButton("Cancel")
 
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(self.scatter_btn)
-        layout.addWidget(self.cancel_btn)
 
         return layout
 
+    def _scatter_properties_from_ui(self):
+        self.scattering.to_transfer_sel = self.obj1_le.text()
+        self.scattering.transfer_sel = self.obj2_le.text()
+
+        self.scattering.min_sx = self.sx_min.value()
+        self.scattering.max_sx = self.sx_max.value()
+        self.scattering.min_sy = self.sy_min.value()
+        self.scattering.max_sy = self.sy_max.value()
+        self.scattering.min_sz = self.sz_min.value()
+        self.scattering.max_sz = self.sz_max.value()
+
+        self.scattering.min_rx = self.rx_min.value()
+        self.scattering.max_rx = self.rx_max.value()
+        self.scattering.min_ry = self.ry_min.value()
+        self.scattering.max_ry = self.ry_max.value()
+        self.scattering.min_rz = self.rz_min.value()
+        self.scattering.max_rz = self.rz_max.value()
+
     def _create_connections(self):
-        pass
+        self.scatter_btn.clicked.connect(self._scatter_the_things)
+
+    @QtCore.Slot()
+    def _scatter_the_things(self):
+        """create instances on the vertices"""
+        self._scatter_properties_from_ui()
+        self.scattering.creating_instances()
+
 
 
 class Scatter(object):
@@ -182,9 +203,6 @@ class Scatter(object):
     def __init__(self):
         self.cur_sel = cmds.ls(selection=True)
         self.to_transfer_sel = self.cur_sel[0]
-
-        self.all_geo = cmds.ls(geometry=True)
-        self.all_trans = cmds.ls(transforms=True)
 
         self.transfer_sel = self.cur_sel[1]
         self.transfer_vert = cmds.ls(self.transfer_sel + ".vtx[*]",
@@ -203,8 +221,6 @@ class Scatter(object):
         self.max_ry = 360.0
         self.min_rz = 1.0
         self.max_rz = 360.0
-
-        self.creating_instances()
 
     def creating_instances(self):
         for vertex in self.transfer_vert:
