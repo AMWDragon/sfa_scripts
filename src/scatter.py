@@ -19,8 +19,8 @@ class ScatterUI(QtWidgets.QDialog):
         super(ScatterUI, self).__init__(parent=maya_main_window())
 
         self.setWindowTitle("Scatter Tool")
-        self.setMinimumWidth(700)
-        self.setMaximumHeight(700)
+        self.setMinimumWidth(500)
+        self.setMaximumHeight(400)
 
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
@@ -34,8 +34,13 @@ class ScatterUI(QtWidgets.QDialog):
 
         self.object_layout = self._create_object_ui()
         self.rs_headers = self._create_scale_rotate_headers()
-        self.rs_layout = self._create_scale_rotate_ui()
+        self.s_layout = self._create_scale_ui()
+        self.r_layout = self._create_rotate_ui()
         self.btn_layout = self._create_button_ui()
+
+        self.rs_layout = QtWidgets.QHBoxLayout()
+        self.rs_layout.addLayout(self.s_layout)
+        self.rs_layout.addLayout(self.r_layout)
 
         self.primary_layout = QtWidgets.QVBoxLayout()
         self.primary_layout.addWidget(self.heading)
@@ -74,30 +79,7 @@ class ScatterUI(QtWidgets.QDialog):
 
         return layout
 
-    def _create_scale_rotate_ui(self):
-        self.sx_min = QtWidgets.QSpinBox()
-        self.sx_min.setValue(self.scattering.min_sx)
-        self.sx_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
-
-        self.sx_max = QtWidgets.QSpinBox()
-        self.sx_max.setValue(self.scattering.max_sx)
-        self.sx_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
-
-        self.sy_min = QtWidgets.QSpinBox()
-        self.sy_min.setValue(self.scattering.min_sy)
-        self.sy_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
-
-        self.sy_max = QtWidgets.QSpinBox()
-        self.sy_max.setValue(self.scattering.max_sy)
-        self.sy_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
-
-        self.sz_min = QtWidgets.QSpinBox()
-        self.sz_min.setValue(self.scattering.min_sz)
-        self.sz_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
-
-        self.sz_max = QtWidgets.QSpinBox()
-        self.sz_max.setValue(self.scattering.max_sz)
-        self.sz_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+    def _create_rotate_ui(self):
 
         self.rx_min = QtWidgets.QSpinBox()
         self.rx_min.setValue(self.scattering.min_rx)
@@ -126,31 +108,69 @@ class ScatterUI(QtWidgets.QDialog):
         layout = QtWidgets.QGridLayout()
         layout.addWidget(QtWidgets.QLabel("min"), 0, 1)
         layout.addWidget(QtWidgets.QLabel("max"), 0, 2)
-        layout.addWidget(QtWidgets.QLabel("min"), 0, 4)
-        layout.addWidget(QtWidgets.QLabel("max"), 0, 5)
         layout.addWidget(QtWidgets.QLabel("X:"), 1, 0)
-        layout.addWidget(self.sx_min, 1, 1)
-        layout.addWidget(self.sx_max, 1, 2)
-        layout.addWidget(QtWidgets.QLabel("X:"), 1, 3)
-        layout.addWidget(self.rx_min, 1, 4)
-        layout.addWidget(self.rx_max, 1, 5)
+        layout.addWidget(self.rx_min, 1, 1)
+        layout.addWidget(self.rx_max, 1, 2)
         layout.addWidget(QtWidgets.QLabel("Y:"), 2, 0)
-        layout.addWidget(self.sy_min, 2, 1)
-        layout.addWidget(self.sy_max, 2, 2)
-        layout.addWidget(QtWidgets.QLabel("X:"), 2, 3)
-        layout.addWidget(self.ry_min, 2, 4)
-        layout.addWidget(self.ry_max, 2, 5)
+        layout.addWidget(self.ry_min, 2, 1)
+        layout.addWidget(self.ry_max, 2, 2)
         layout.addWidget(QtWidgets.QLabel("Z:"), 3, 0)
-        layout.addWidget(self.sz_min, 3, 1)
-        layout.addWidget(self.sz_max, 3, 2)
-        layout.addWidget(QtWidgets.QLabel("Z:"), 3, 3)
-        layout.addWidget(self.rz_min, 3, 4)
-        layout.addWidget(self.rz_max, 3, 5)
+        layout.addWidget(self.rz_min, 3, 1)
+        layout.addWidget(self.rz_max, 3, 2)
 
         return layout
 
+    def _create_scale_ui(self):
+        self.sx_min = QtWidgets.QSpinBox()
+        self.sx_min.setValue(self.scattering.min_sx)
+        self.sx_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.sx_max = QtWidgets.QSpinBox()
+        self.sx_max.setValue(self.scattering.max_sx)
+        self.sx_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.sy_min = QtWidgets.QSpinBox()
+        self.sy_min.setValue(self.scattering.min_sy)
+        self.sy_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.sy_max = QtWidgets.QSpinBox()
+        self.sy_max.setValue(self.scattering.max_sy)
+        self.sy_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.sz_min = QtWidgets.QSpinBox()
+        self.sz_min.setValue(self.scattering.min_sz)
+        self.sz_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.sz_max = QtWidgets.QSpinBox()
+        self.sz_max.setValue(self.scattering.max_sz)
+        self.sz_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(QtWidgets.QLabel("min"), 0, 1)
+        layout.addWidget(QtWidgets.QLabel("max"), 0, 2)
+        layout.addWidget(QtWidgets.QLabel("X:"), 1, 0)
+        layout.addWidget(self.sx_min, 1, 1)
+        layout.addWidget(self.sx_max, 1, 2)
+        layout.addWidget(QtWidgets.QLabel("Y:"), 2, 0)
+        layout.addWidget(self.sy_min, 2, 1)
+        layout.addWidget(self.sy_max, 2, 2)
+        layout.addWidget(QtWidgets.QLabel("Z:"), 3, 0)
+        layout.addWidget(self.sz_min, 3, 1)
+        layout.addWidget(self.sz_max, 3, 2)
+
+        return layout
+
+
+
     def _create_button_ui(self):
-        pass
+        self.scatter_btn = QtWidgets.QPushButton("Scatter")
+        self.cancel_btn = QtWidgets.QPushButton("Cancel")
+
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(self.scatter_btn)
+        layout.addWidget(self.cancel_btn)
+
+        return layout
 
     def _create_connections(self):
         pass
