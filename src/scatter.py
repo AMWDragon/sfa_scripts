@@ -25,7 +25,7 @@ class ScatterUI(QtWidgets.QDialog):
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
 
-        # self.scattering = Scatter()
+        self.scattering = Scatter()
         self.create_ui()
 
     def create_ui(self):
@@ -48,8 +48,8 @@ class ScatterUI(QtWidgets.QDialog):
         self.setLayout(self.primary_layout)
 
     def _create_object_ui(self):
-        default_obj1 = "Connect Something Here"
-        default_obj2 = "Connect Something Else Here"
+        default_obj1 = self.scattering.to_transfer_sel
+        default_obj2 = self.scattering.transfer_sel
 
         self.obj1_le = QtWidgets.QLineEdit(default_obj1)
         self.obj2_le = QtWidgets.QLineEdit(default_obj2)
@@ -75,7 +75,79 @@ class ScatterUI(QtWidgets.QDialog):
         return layout
 
     def _create_scale_rotate_ui(self):
-        pass
+        self.sx_min = QtWidgets.QSpinBox()
+        self.sx_min.setValue(self.scattering.min_sx)
+        self.sx_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.sx_max = QtWidgets.QSpinBox()
+        self.sx_max.setValue(self.scattering.max_sx)
+        self.sx_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.sy_min = QtWidgets.QSpinBox()
+        self.sy_min.setValue(self.scattering.min_sy)
+        self.sy_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.sy_max = QtWidgets.QSpinBox()
+        self.sy_max.setValue(self.scattering.max_sy)
+        self.sy_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.sz_min = QtWidgets.QSpinBox()
+        self.sz_min.setValue(self.scattering.min_sz)
+        self.sz_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.sz_max = QtWidgets.QSpinBox()
+        self.sz_max.setValue(self.scattering.max_sz)
+        self.sz_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.rx_min = QtWidgets.QSpinBox()
+        self.rx_min.setValue(self.scattering.min_rx)
+        self.rx_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.rx_max = QtWidgets.QSpinBox()
+        self.rx_max.setValue(self.scattering.max_rx)
+        self.rx_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.ry_min = QtWidgets.QSpinBox()
+        self.ry_min.setValue(self.scattering.min_ry)
+        self.ry_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.ry_max = QtWidgets.QSpinBox()
+        self.ry_max.setValue(self.scattering.max_ry)
+        self.ry_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.rz_min = QtWidgets.QSpinBox()
+        self.rz_min.setValue(self.scattering.min_rz)
+        self.rz_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        self.rz_max = QtWidgets.QSpinBox()
+        self.rz_max.setValue(self.scattering.max_rz)
+        self.rz_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(QtWidgets.QLabel("min"), 0, 1)
+        layout.addWidget(QtWidgets.QLabel("max"), 0, 2)
+        layout.addWidget(QtWidgets.QLabel("min"), 0, 4)
+        layout.addWidget(QtWidgets.QLabel("max"), 0, 5)
+        layout.addWidget(QtWidgets.QLabel("X:"), 1, 0)
+        layout.addWidget(self.sx_min, 1, 1)
+        layout.addWidget(self.sx_max, 1, 2)
+        layout.addWidget(QtWidgets.QLabel("X:"), 1, 3)
+        layout.addWidget(self.rx_min, 1, 4)
+        layout.addWidget(self.rx_max, 1, 5)
+        layout.addWidget(QtWidgets.QLabel("Y:"), 2, 0)
+        layout.addWidget(self.sy_min, 2, 1)
+        layout.addWidget(self.sy_max, 2, 2)
+        layout.addWidget(QtWidgets.QLabel("X:"), 2, 3)
+        layout.addWidget(self.ry_min, 2, 4)
+        layout.addWidget(self.ry_max, 2, 5)
+        layout.addWidget(QtWidgets.QLabel("Z:"), 3, 0)
+        layout.addWidget(self.sz_min, 3, 1)
+        layout.addWidget(self.sz_max, 3, 2)
+        layout.addWidget(QtWidgets.QLabel("Z:"), 3, 3)
+        layout.addWidget(self.rz_min, 3, 4)
+        layout.addWidget(self.rz_max, 3, 5)
+
+        return layout
 
     def _create_button_ui(self):
         pass
