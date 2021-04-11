@@ -32,13 +32,28 @@ class ScatterUI(QtWidgets.QDialog):
         self.heading = QtWidgets.QLabel("Scatter Tool")
         self.heading.setStyleSheet("font: bold 22px")
 
+        self.object_layout = self._create_object_ui()
+
         self.primary_layout = QtWidgets.QVBoxLayout()
         self.primary_layout.addWidget(self.heading)
+        self.primary_layout.addLayout(self.object_layout)
 
         self.setLayout(self.primary_layout)
 
     def _create_object_ui(self):
-        pass
+        default_obj1 = "Connect Something Here"
+        default_obj2 = "Connect Something Else Here"
+
+        self.obj1_le = QtWidgets.QLineEdit(default_obj1)
+        self.obj2_le = QtWidgets.QLineEdit(default_obj2)
+
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(QtWidgets.QLabel("Scatter"), 0, 0)
+        layout.addWidget(self.obj1_le, 0, 1)
+        layout.addWidget(QtWidgets.QLabel("on to"), 0, 2)
+        layout.addWidget(self.obj2_le, 0, 3)
+
+        return layout
 
     def _create_scale_rotate_ui(self):
         pass
