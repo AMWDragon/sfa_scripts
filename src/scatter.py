@@ -1,9 +1,9 @@
 import maya.cmds as cmds
 import maya.OpenMaya as om
+import maya.OpenMayaUI as omui
 import random
 from PySide2 import QtWidgets, QtCore
 from shiboken2 import wrapInstance
-import maya.OpenMayaUI as omui
 
 
 def maya_main_window():
@@ -25,7 +25,29 @@ class ScatterUI(QtWidgets.QDialog):
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
 
-        self.scattering = Scatter()
+        # self.scattering = Scatter()
+        self.create_ui()
+
+    def create_ui(self):
+        self.heading = QtWidgets.QLabel("Scatter Tool")
+        self.heading.setStyleSheet("font: bold 22px")
+
+        self.primary_layout = QtWidgets.QVBoxLayout()
+        self.primary_layout.addWidget(self.heading)
+
+        self.setLayout(self.primary_layout)
+
+    def _create_object_ui(self):
+        pass
+
+    def _create_scale_rotate_ui(self):
+        pass
+
+    def _create_button_ui(self):
+        pass
+
+    def _create_connections(self):
+        pass
 
 
 class Scatter(object):
