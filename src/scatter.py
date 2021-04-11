@@ -1,6 +1,7 @@
 import maya.cmds as cmds
 import maya.OpenMaya as om
 import random
+import math
 
 # determine what the user has selected.
 
@@ -38,14 +39,24 @@ class Scatter(object):
         self.min_sz = 1.0
         self.max_sz = 2.0
 
+        self.min_rx = 1.0
+        self.max_rx = 360.0
+        self.min_ry = 1.0
+        self.max_ry = 360.0
+        self.min_rz = 1.0
+        self.max_rz = 360.0
+
         self.creating_instances()
+        cmds.selection(clear=True)
 
     def creating_instances(self):
         for vertex in self.transfer_vert:
             new_geo = cmds.instance(self.to_transfer_sel)
             vtx_pos = cmds.xform([vertex], query=True, translation=True)
+            print(vtx_pos)
             cmds.xform(new_geo, translation=vtx_pos,
-                       scale=self.randomize_scale())
+                       scale=self.randomize_scale(),
+                       rotation=self.randomize_rotation())
 
     def randomize_scale(self):
         random_sx = random.uniform(self.min_sx, self.max_sx)
@@ -56,4 +67,9 @@ class Scatter(object):
         return rand_scale
 
     def randomize_rotation(self):
-        pass
+        random_rx = random.uniform(self.min_rx, self.max_rx)
+        random_ry = random.uniform(self.min_ry, self.max_ry)
+        random_rz = random.uniform(self.min_rz, self.max_rz)
+
+        rand_rotate = (random_rx, random_ry, random_rz)
+        return rand_rotate
