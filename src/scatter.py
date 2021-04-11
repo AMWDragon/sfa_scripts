@@ -168,6 +168,15 @@ class ScatterUI(QtWidgets.QDialog):
 
         return layout
 
+    def _create_connections(self):
+        self.scatter_btn.clicked.connect(self._scatter_the_things)
+
+    @QtCore.Slot()
+    def _scatter_the_things(self):
+        """create instances on the vertices"""
+        self._scatter_properties_from_ui()
+        self.scattering.creating_instances()
+
     def _scatter_properties_from_ui(self):
         self.scattering.to_transfer_sel = self.obj1_le.text()
         self.scattering.transfer_sel = self.obj2_le.text()
@@ -185,16 +194,6 @@ class ScatterUI(QtWidgets.QDialog):
         self.scattering.max_ry = self.ry_max.value()
         self.scattering.min_rz = self.rz_min.value()
         self.scattering.max_rz = self.rz_max.value()
-
-    def _create_connections(self):
-        self.scatter_btn.clicked.connect(self._scatter_the_things)
-
-    @QtCore.Slot()
-    def _scatter_the_things(self):
-        """create instances on the vertices"""
-        self._scatter_properties_from_ui()
-        self.scattering.creating_instances()
-
 
 
 class Scatter(object):
@@ -223,13 +222,20 @@ class Scatter(object):
         self.max_rz = 360.0
 
     def creating_instances(self):
+
+        scattered_group = []
+
         for vertex in self.transfer_vert:
             new_geo = cmds.instance(self.to_transfer_sel)
             vtx_pos = cmds.xform([vertex], query=True, translation=True)
-            print(vtx_pos)
             cmds.xform(new_geo, translation=vtx_pos,
                        scale=self.randomize_scale(),
                        rotation=self.randomize_rotation())
+            scattered_group.extend(new_geo)
+
+        instance_group = cmds.group(scattered_group, name='scatter_group')
+
+        return instance_group
 
     def randomize_scale(self):
         random_sx = random.uniform(self.min_sx, self.max_sx)
