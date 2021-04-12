@@ -1,5 +1,4 @@
 import maya.cmds as cmds
-import maya.OpenMaya as om
 import maya.OpenMayaUI as omui
 import random
 from PySide2 import QtWidgets, QtCore
@@ -27,6 +26,7 @@ class ScatterUI(QtWidgets.QDialog):
 
         self.scattering = Scatter()
         self.create_ui()
+        self._create_connections()
 
     def create_ui(self):
         self.heading = QtWidgets.QLabel("Scatter Tool")
