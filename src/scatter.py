@@ -221,6 +221,8 @@ class Scatter(object):
         self.min_rz = 0.0
         self.max_rz = 0.0
 
+        self.scatter_percentage = 100
+
     def creating_instances(self):
 
         scattered_group = []
@@ -253,3 +255,12 @@ class Scatter(object):
 
         rand_rotate = (random_rx, random_ry, random_rz)
         return rand_rotate
+
+    def scatter_randomizer(self):
+        pass
+
+    def align_vertex_normals(self):
+        pass
+
+    def custom_feature_here(self):
+        pass
