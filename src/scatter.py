@@ -221,13 +221,15 @@ class Scatter(object):
         self.min_rz = 0.0
         self.max_rz = 0.0
 
-        self.scatter_percentage = 100
+        self.scatter_percentage = 0.5
 
     def creating_instances(self):
 
         scattered_group = []
 
-        for vertex in self.transfer_vert:
+        self.scatter_randomizer()
+
+        for vertex in self.percentage_selection:
             new_geo = cmds.instance(self.to_transfer_sel)
             vtx_pos = cmds.xform([vertex], query=True, translation=True)
             cmds.xform(new_geo, translation=vtx_pos,
@@ -257,10 +259,18 @@ class Scatter(object):
         return rand_rotate
 
     def scatter_randomizer(self):
-        pass
+        self.percentage_selection = []
+
+        for idx in range(0, len(self.transfer_vert)):
+            random.seed(idx)
+            rand_value = random.random()
+            if rand_value <= self.scatter_percentage:
+                self.percentage_selection.append(self.transfer_vert[idx])
+
+        return self.percentage_selection
 
     def align_vertex_normals(self):
         pass
 
-    def custom_feature_here(self):
+    def random_duplicate(self):
         pass
