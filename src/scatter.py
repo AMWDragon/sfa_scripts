@@ -54,16 +54,14 @@ class ScatterUI(QtWidgets.QDialog):
 
     def _create_object_ui(self):
         default_obj1 = self.scattering.to_transfer_sel
-        default_obj2 = self.scattering.transfer_sel
 
         self.obj1_le = QtWidgets.QLineEdit(default_obj1)
-        self.obj2_le = QtWidgets.QLineEdit(default_obj2)
 
         layout = QtWidgets.QGridLayout()
         layout.addWidget(QtWidgets.QLabel("Scatter"), 0, 0)
         layout.addWidget(self.obj1_le, 0, 1)
         layout.addWidget(QtWidgets.QLabel("on to"), 0, 2)
-        layout.addWidget(self.obj2_le, 0, 3)
+        layout.addWidget(QtWidgets.QLabel('Selection'), 0, 3)
 
         return layout
 
@@ -121,27 +119,27 @@ class ScatterUI(QtWidgets.QDialog):
         return layout
 
     def _create_scale_ui(self):
-        self.sx_min = QtWidgets.QSpinBox()
+        self.sx_min = QtWidgets.QDoubleSpinBox()
         self.sx_min.setValue(self.scattering.min_sx)
         self.sx_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
-        self.sx_max = QtWidgets.QSpinBox()
+        self.sx_max = QtWidgets.QDoubleSpinBox()
         self.sx_max.setValue(self.scattering.max_sx)
         self.sx_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
-        self.sy_min = QtWidgets.QSpinBox()
+        self.sy_min = QtWidgets.QDoubleSpinBox()
         self.sy_min.setValue(self.scattering.min_sy)
         self.sy_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
-        self.sy_max = QtWidgets.QSpinBox()
+        self.sy_max = QtWidgets.QDoubleSpinBox()
         self.sy_max.setValue(self.scattering.max_sy)
         self.sy_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
-        self.sz_min = QtWidgets.QSpinBox()
+        self.sz_min = QtWidgets.QDoubleSpinBox()
         self.sz_min.setValue(self.scattering.min_sz)
         self.sz_min.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
-        self.sz_max = QtWidgets.QSpinBox()
+        self.sz_max = QtWidgets.QDoubleSpinBox()
         self.sz_max.setValue(self.scattering.max_sz)
         self.sz_max.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
 
@@ -179,7 +177,6 @@ class ScatterUI(QtWidgets.QDialog):
 
     def _scatter_properties_from_ui(self):
         self.scattering.to_transfer_sel = self.obj1_le.text()
-        self.scattering.transfer_sel = self.obj2_le.text()
 
         self.scattering.min_sx = self.sx_min.value()
         self.scattering.max_sx = self.sx_max.value()
@@ -200,26 +197,29 @@ class Scatter(object):
     """My code for the Scatter Tool"""
 
     def __init__(self):
-        self.cur_sel = cmds.ls(selection=True)
-        self.to_transfer_sel = self.cur_sel[0]
+        self.cur_sel = cmds.ls(selection=True, flatten=True)
+        self.all_trans = cmds.ls(transforms=True)
 
-        self.transfer_sel = self.cur_sel[1]
-        self.transfer_vert = cmds.ls(self.transfer_sel + ".vtx[*]",
-                                     flatten=True)
+        self.to_transfer_sel = self.all_trans[0]
+
+        self.transfer_sel = cmds.polyListComponentConversion(self.cur_sel,
+                                                             toVertex=True)
+        self.transfer_vert = cmds.filterExpand(self.transfer_sel,
+                                               selectionMask=31)
 
         self.min_sx = 1.0
-        self.max_sx = 2.0
+        self.max_sx = 1.0
         self.min_sy = 1.0
-        self.max_sy = 2.0
+        self.max_sy = 1.0
         self.min_sz = 1.0
-        self.max_sz = 2.0
+        self.max_sz = 1.0
 
-        self.min_rx = 1.0
-        self.max_rx = 360.0
-        self.min_ry = 1.0
-        self.max_ry = 360.0
-        self.min_rz = 1.0
-        self.max_rz = 360.0
+        self.min_rx = 0.0
+        self.max_rx = 0.0
+        self.min_ry = 0.0
+        self.max_ry = 0.0
+        self.min_rz = 0.0
+        self.max_rz = 0.0
 
     def creating_instances(self):
 
@@ -230,7 +230,8 @@ class Scatter(object):
             vtx_pos = cmds.xform([vertex], query=True, translation=True)
             cmds.xform(new_geo, translation=vtx_pos,
                        scale=self.randomize_scale(),
-                       rotation=self.randomize_rotation())
+                       rotation=self.randomize_rotation(),
+                       worldSpace=True)
             scattered_group.extend(new_geo)
 
         instance_group = cmds.group(scattered_group, name='scatter_group')
