@@ -1,5 +1,6 @@
 import maya.cmds as cmds
 import maya.OpenMayaUI as omui
+import pymel.core as pm
 import random
 from PySide2 import QtWidgets, QtCore
 from shiboken2 import wrapInstance
@@ -221,12 +222,13 @@ class Scatter(object):
         self.min_rz = 0.0
         self.max_rz = 0.0
 
-        self.scatter_percentage = 0.5
+        self.scatter_percentage = 1.0
+
+        self.collect_normals = True
 
     def creating_instances(self):
 
         scattered_group = []
-
         self.scatter_randomizer()
 
         for vertex in self.percentage_selection:
@@ -237,6 +239,10 @@ class Scatter(object):
                        rotation=self.randomize_rotation(),
                        worldSpace=True)
             scattered_group.extend(new_geo)
+
+            if self.collect_normals:
+                constraint = cmds.normalConstraint(vertex, new_geo)
+                cmds.delete(constraint)
 
         instance_group = cmds.group(scattered_group, name='scatter_group')
 
@@ -268,9 +274,6 @@ class Scatter(object):
                 self.percentage_selection.append(self.transfer_vert[idx])
 
         return self.percentage_selection
-
-    def align_vertex_normals(self):
-        pass
 
     def random_duplicate(self):
         pass
