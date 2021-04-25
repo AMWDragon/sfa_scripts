@@ -224,7 +224,10 @@ class Scatter(object):
 
         self.scatter_percentage = 1.0
 
-        self.collect_normals = True
+        self.collect_normals = False
+
+        self.duplicate = True
+        self.duplicate_percentage = 0.4
 
     def creating_instances(self):
 
@@ -243,6 +246,9 @@ class Scatter(object):
             if self.collect_normals:
                 constraint = cmds.normalConstraint(vertex, new_geo)
                 cmds.delete(constraint)
+
+        if self.duplicate:
+            self.random_duplicate()
 
         instance_group = cmds.group(scattered_group, name='scatter_group')
 
@@ -275,5 +281,39 @@ class Scatter(object):
 
         return self.percentage_selection
 
+    def random_duplicate_randomizer(self):
+
+        self.percentage_duplicate = []
+
+        for idx in range(0, len(self.percentage_selection)):
+            random.seed(idx)
+            rand_value = random.random()
+            if rand_value <= self.duplicate_percentage:
+                self.percentage_duplicate.append(self.transfer_vert[idx])
+
+        return self.percentage_duplicate
+
     def random_duplicate(self):
-        pass
+        self.random_duplicate_randomizer()
+        scattered_group = []
+
+        for vertex in self.percentage_duplicate:
+            new_geo = cmds.instance(self.to_transfer_sel)
+            vtx_pos = cmds.xform([vertex], query=True, translation=True)
+            cmds.xform(new_geo, translation=vtx_pos,
+                       scale=self.randomize_scale(),
+                       rotation=self.randomize_rotation(),
+                       worldSpace=True)
+            scattered_group.extend(new_geo)
+
+            if self.collect_normals:
+                constraint = cmds.normalConstraint(vertex, new_geo)
+                cmds.delete(constraint)
+
+        if self.duplicate:
+            self.random_duplicate()
+
+        instance_group = cmds.group(scattered_group,
+                                    name='scatter_group_duplicates')
+
+        return instance_group
