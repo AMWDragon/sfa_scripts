@@ -20,7 +20,7 @@ class ScatterUI(QtWidgets.QDialog):
 
         self.setWindowTitle("Scatter Tool")
         self.setMinimumWidth(500)
-        self.setMaximumHeight(400)
+        self.setMaximumHeight(600)
 
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
@@ -55,14 +55,19 @@ class ScatterUI(QtWidgets.QDialog):
 
     def _create_object_ui(self):
         default_obj1 = self.scattering.to_transfer_sel
+        default_scatter_percent = self.scattering.scatter_percentage
 
         self.obj1_le = QtWidgets.QLineEdit(default_obj1)
+        self.percent_dbspx = QtWidgets.QDoubleSpinBox(maximum=1.0,
+                                                      singleStep=0.05)
+        self.percent_dbspx.setValue(default_scatter_percent)
 
         layout = QtWidgets.QGridLayout()
         layout.addWidget(QtWidgets.QLabel("Scatter"), 0, 0)
         layout.addWidget(self.obj1_le, 0, 1)
         layout.addWidget(QtWidgets.QLabel("on to"), 0, 2)
-        layout.addWidget(QtWidgets.QLabel('Selection'), 0, 3)
+        layout.addWidget(self.percent_dbspx, 0, 3)
+        layout.addWidget(QtWidgets.QLabel('Decimal % of Selection'), 0, 4)
 
         return layout
 
@@ -193,6 +198,8 @@ class ScatterUI(QtWidgets.QDialog):
         self.scattering.min_rz = self.rz_min.value()
         self.scattering.max_rz = self.rz_max.value()
 
+        self.scattering.scatter_percentage = self.percent_dbspx.value()
+
 
 class Scatter(object):
     """My code for the Scatter Tool"""
@@ -227,9 +234,9 @@ class Scatter(object):
         self.collect_normals = False
         self.keep_constraint = False
 
-        self.materials = True
-        self.materials_percentage = 0.4
-        self.scatter_material = 'lambert2'
+        self.materials = False
+        self.materials_percentage = 1.0
+        self.scatter_material = 'lambert1'
 
     def creating_instances(self):
 
