@@ -38,6 +38,7 @@ class ScatterUI(QtWidgets.QDialog):
         self.s_layout = self._create_scale_ui()
         self.r_layout = self._create_rotate_ui()
         self.btn_layout = self._create_button_ui()
+        self.normals_layout = self._create_normals_ui()
 
         self.rs_layout = QtWidgets.QHBoxLayout()
         self.rs_layout.addLayout(self.s_layout)
@@ -46,6 +47,7 @@ class ScatterUI(QtWidgets.QDialog):
         self.primary_layout = QtWidgets.QVBoxLayout()
         self.primary_layout.addWidget(self.heading)
         self.primary_layout.addLayout(self.object_layout)
+        self.primary_layout.addLayout(self.normals_layout)
         self.primary_layout.addLayout(self.rs_headers)
         self.primary_layout.addLayout(self.rs_layout)
         self.primary_layout.addStretch()
@@ -68,6 +70,22 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addWidget(QtWidgets.QLabel("on to"), 0, 2)
         layout.addWidget(self.percent_dbspx, 0, 3)
         layout.addWidget(QtWidgets.QLabel('Decimal % of Selection'), 0, 4)
+
+        return layout
+
+    def _create_normals_ui(self):
+        default_align_val = self.scattering.collect_normals
+        default_constraint_val = self.scattering.keep_constraint
+
+        self.align_normals_ckbx = QtWidgets.QCheckBox('Align to Normal')
+        self.align_normals_ckbx.setChecked(default_align_val)
+        self.keep_cst_ckbx = QtWidgets.QCheckBox('Keep Constraints')
+        self.keep_cst_ckbx.setChecked(default_constraint_val)
+
+
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(self.align_normals_ckbx)
+        layout.addWidget(self.keep_cst_ckbx)
 
         return layout
 
@@ -199,6 +217,8 @@ class ScatterUI(QtWidgets.QDialog):
         self.scattering.max_rz = self.rz_max.value()
 
         self.scattering.scatter_percentage = self.percent_dbspx.value()
+        self.scattering.collect_normals = self.align_normals_ckbx.checkState()
+        self.scattering.keep_constraint = self.keep_cst_ckbx.checkState()
 
 
 class Scatter(object):
