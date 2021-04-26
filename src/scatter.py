@@ -225,9 +225,11 @@ class Scatter(object):
         self.scatter_percentage = 1.0
 
         self.collect_normals = False
+        self.keep_constraint = False
 
         self.materials = True
         self.materials_percentage = 0.4
+        self.scatter_material = 'lambert2'
 
     def creating_instances(self):
 
@@ -243,9 +245,12 @@ class Scatter(object):
                        worldSpace=True)
             scattered_group.extend(new_geo)
 
+            self.scatter_materials(new_geo)
+
             if self.collect_normals:
                 constraint = cmds.normalConstraint(vertex, new_geo)
-                cmds.delete(constraint)
+                if self.keep_constraint:
+                    cmds.delete(constraint)
 
         instance_group = cmds.group(scattered_group, name='scatter_group')
 
@@ -281,5 +286,7 @@ class Scatter(object):
     def scatter_material_randomizer(self):
         pass
 
-    def scatter_materials(self):
-        pass
+    def scatter_materials(self, geo):
+        if self.materials:
+            cmds.sets(geo, e=True,
+                      forceElement=self.scatter_material + 'SG')
