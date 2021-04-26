@@ -19,8 +19,8 @@ class ScatterUI(QtWidgets.QDialog):
         super(ScatterUI, self).__init__(parent=maya_main_window())
 
         self.setWindowTitle("Scatter Tool")
-        self.setMinimumWidth(500)
-        self.setMaximumHeight(600)
+        self.setMinimumWidth(550)
+        self.setMaximumHeight(500)
 
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
@@ -39,6 +39,7 @@ class ScatterUI(QtWidgets.QDialog):
         self.r_layout = self._create_rotate_ui()
         self.btn_layout = self._create_button_ui()
         self.normals_layout = self._create_normals_ui()
+        self.m_layout = self._create_material_scatter_ui()
 
         self.rs_layout = QtWidgets.QHBoxLayout()
         self.rs_layout.addLayout(self.s_layout)
@@ -50,6 +51,7 @@ class ScatterUI(QtWidgets.QDialog):
         self.primary_layout.addLayout(self.normals_layout)
         self.primary_layout.addLayout(self.rs_headers)
         self.primary_layout.addLayout(self.rs_layout)
+        self.primary_layout.addLayout(self.m_layout)
         self.primary_layout.addStretch()
         self.primary_layout.addLayout(self.btn_layout)
 
@@ -182,6 +184,41 @@ class ScatterUI(QtWidgets.QDialog):
 
         return layout
 
+    def _create_material_scatter_ui(self):
+        default_scatter_material = self.scattering.materials
+        default_material = self.scattering.scatter_material
+        default_material_percent = self.scattering.materials_percentage
+
+        self.materials_ckbx = QtWidgets.QCheckBox('Scatter Materials')
+        self.materials_ckbx.setChecked(default_scatter_material)
+
+        self.material_le = QtWidgets.QLineEdit(default_material)
+
+        self.material_dbsx = QtWidgets.QDoubleSpinBox(maximum=1.0,
+                                                      singleStep=0.05)
+        self.material_dbsx.setValue(default_material_percent)
+
+        header = QtWidgets.QLabel("Randomly Scatter Materials")
+        header.setStyleSheet("font: bold 20px")
+
+        m_label1 = QtWidgets.QLabel("Scatter")
+        m_label2 = QtWidgets.QLabel("over")
+        m_label3 = QtWidgets.QLabel("Decimal % of Objects")
+
+        sublayout = QtWidgets.QHBoxLayout()
+        sublayout.addWidget(m_label1)
+        sublayout.addWidget(self.material_le)
+        sublayout.addWidget(m_label2)
+        sublayout.addWidget(self.material_dbsx)
+        sublayout.addWidget(m_label3)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(header)
+        layout.addWidget(self.materials_ckbx)
+        layout.addLayout(sublayout)
+
+        return layout
+
     def _create_button_ui(self):
         self.scatter_btn = QtWidgets.QPushButton("Scatter")
 
@@ -219,6 +256,10 @@ class ScatterUI(QtWidgets.QDialog):
         self.scattering.scatter_percentage = self.percent_dbspx.value()
         self.scattering.collect_normals = self.align_normals_ckbx.checkState()
         self.scattering.keep_constraint = self.keep_cst_ckbx.checkState()
+
+        self.scattering.materials = self.materials_ckbx.checkState()
+        self.scattering.scatter_material = self.material_le.text()
+        self.scattering.materials_percentage = self.material_dbsx.value()
 
 
 class Scatter(object):
