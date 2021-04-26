@@ -84,8 +84,11 @@ class ScatterUI(QtWidgets.QDialog):
         self.keep_cst_ckbx = QtWidgets.QCheckBox('Keep Constraints')
         self.keep_cst_ckbx.setChecked(default_constraint_val)
 
+        header = QtWidgets.QLabel("Align to Vertex Normals")
+        header.setStyleSheet("font: bold 20px")
 
-        layout = QtWidgets.QHBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(header)
         layout.addWidget(self.align_normals_ckbx)
         layout.addWidget(self.keep_cst_ckbx)
 
