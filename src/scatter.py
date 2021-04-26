@@ -233,7 +233,7 @@ class Scatter(object):
 
     def creating_instances(self):
 
-        scattered_group = []
+        self.scattered_group = []
         self.scatter_randomizer()
 
         for vertex in self.percentage_selection:
@@ -243,16 +243,16 @@ class Scatter(object):
                        scale=self.randomize_scale(),
                        rotation=self.randomize_rotation(),
                        worldSpace=True)
-            scattered_group.extend(new_geo)
-
-            self.scatter_materials(new_geo)
+            self.scattered_group.extend(new_geo)
 
             if self.collect_normals:
                 constraint = cmds.normalConstraint(vertex, new_geo)
                 if self.keep_constraint:
                     cmds.delete(constraint)
 
-        instance_group = cmds.group(scattered_group, name='scatter_group')
+        self.scatter_materials()
+
+        instance_group = cmds.group(self.scattered_group, name='scatter_group')
 
         return instance_group
 
@@ -284,9 +284,20 @@ class Scatter(object):
         return self.percentage_selection
 
     def scatter_material_randomizer(self):
-        pass
+        self.random_obj_coloring = []
 
-    def scatter_materials(self, geo):
+        for idx in range(0, len(self.scattered_group)):
+            random.seed(idx)
+            rand_value = random.random()
+            if rand_value <= self.materials_percentage:
+                self.random_obj_coloring.append(self.scattered_group[idx])
+
+        return self.random_obj_coloring
+
+    def scatter_materials(self):
         if self.materials:
-            cmds.sets(geo, e=True,
-                      forceElement=self.scatter_material + 'SG')
+            self.scatter_material_randomizer()
+
+            for geo in self.random_obj_coloring:
+                cmds.sets(geo, e=True,
+                          forceElement=self.scatter_material + 'SG')
