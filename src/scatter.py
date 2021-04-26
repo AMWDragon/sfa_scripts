@@ -77,12 +77,9 @@ class ScatterUI(QtWidgets.QDialog):
 
     def _create_normals_ui(self):
         default_align_val = self.scattering.collect_normals
-        default_constraint_val = self.scattering.keep_constraint
 
-        self.align_normals_ckbx = QtWidgets.QCheckBox('Align to Normal')
+        self.align_normals_ckbx = QtWidgets.QCheckBox('Align to Normals')
         self.align_normals_ckbx.setChecked(default_align_val)
-        self.keep_cst_ckbx = QtWidgets.QCheckBox('Keep Constraints')
-        self.keep_cst_ckbx.setChecked(default_constraint_val)
 
         header = QtWidgets.QLabel("Align to Vertex Normals")
         header.setStyleSheet("font: bold 20px")
@@ -90,7 +87,6 @@ class ScatterUI(QtWidgets.QDialog):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(header)
         layout.addWidget(self.align_normals_ckbx)
-        layout.addWidget(self.keep_cst_ckbx)
 
         return layout
 
@@ -258,7 +254,6 @@ class ScatterUI(QtWidgets.QDialog):
 
         self.scattering.scatter_percentage = self.percent_dbspx.value()
         self.scattering.collect_normals = self.align_normals_ckbx.checkState()
-        self.scattering.keep_constraint = self.keep_cst_ckbx.checkState()
 
         self.scattering.materials = self.materials_ckbx.checkState()
         self.scattering.scatter_material = self.material_le.text()
@@ -296,7 +291,6 @@ class Scatter(object):
         self.scatter_percentage = 1.0
 
         self.collect_normals = False
-        self.keep_constraint = False
 
         self.materials = False
         self.materials_percentage = 1.0
@@ -317,9 +311,7 @@ class Scatter(object):
             self.scattered_group.extend(new_geo)
 
             if self.collect_normals:
-                constraint = cmds.normalConstraint(vertex, new_geo)
-                if self.keep_constraint:
-                    cmds.delete(constraint)
+                cmds.normalConstraint(vertex, new_geo)
 
         self.scatter_materials()
 
